@@ -2,10 +2,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { FaHome, FaSignOutAlt, FaSignInAlt, FaChartLine } from "react-icons/fa";
-import { FaHome, FaSignOutAlt, FaSignInAlt, FaChartLine } from "react-icons/fa";
 
 const Header: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -30,15 +28,12 @@ const Header: React.FC = () => {
             </Link>
           </li>
           {isAuthenticated ? (
-          {isAuthenticated ? (
             <>
               <li>
                 <button
                   onClick={() => navigate("/dashboard")}
                   className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
                 >
-                  <FaChartLine size={18} />
-                  <span>Dashboard</span>
                   <FaChartLine size={18} />
                   <span>Dashboard</span>
                 </button>
@@ -50,8 +45,6 @@ const Header: React.FC = () => {
                 >
                   <FaSignOutAlt size={18} />
                   <span>Logout</span>
-                  <FaSignOutAlt size={18} />
-                  <span>Logout</span>
                 </button>
               </li>
             </>
@@ -61,8 +54,6 @@ const Header: React.FC = () => {
                 onClick={() => navigate("/login")}
                 className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
               >
-                <FaSignInAlt size={18} />
-                <span>Login</span>
                 <FaSignInAlt size={18} />
                 <span>Login</span>
               </button>
