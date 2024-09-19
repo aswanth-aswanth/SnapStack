@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import Image, { IImage } from "../models/Image";
+import ImageBatch, { IImageBatch, IImageDetails } from "../models/Image";
+import path from "path";
 import ErrorHandler from "../utils/errorHandler";
+import mongoose from "mongoose";
 
 const isError = (error: unknown): error is Error => {
   return (error as Error).message !== undefined;
@@ -12,20 +14,26 @@ export const uploadImages = async (
   next: NextFunction
 ) => {
   try {
-    const { user, images } = req.body;
+    const { user } = req as any;
+    const images = req.files as Express.Multer.File[];
+    const { titles } = req.body;
 
-    if (!images || !Array.isArray(images)) {
-      return next(new ErrorHandler("Invalid images array", 400));
+    if (!images || images.length === 0 || !titles || titles.length === 0) {
+      return next(new ErrorHandler("No images or titles provided", 400));
     }
 
-    const uploadedImages = await Image.insertMany(
-      images.map((img: { title: string; url: string }) => ({
-        ...img,
-        userId: user,
-      }))
-    );
+    const imageDetails: IImageDetails[] = images.map((file, index) => ({
+      title: Array.isArray(titles) ? titles[index] : titles,
+      url: path.basename(file.path),
+      order: index,
+    }));
 
-    res.status(201).json(uploadedImages);
+    const newImageBatch: IImageBatch = await ImageBatch.create({
+      userId: user,
+      images: imageDetails,
+    });
+
+    res.status(201).json(newImageBatch);
   } catch (error: unknown) {
     if (isError(error)) {
       next(new ErrorHandler(error.message || "Image upload failed", 500));
@@ -35,25 +43,31 @@ export const uploadImages = async (
   }
 };
 
-export const editImage = async (
+export const editImageInBatch = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { batchId, imageId } = req.params;
     const updatedData = req.body;
 
-    const updatedImage: IImage | null = await Image.findByIdAndUpdate(
-      id,
-      updatedData,
-      { new: true }
-    );
-    if (!updatedImage) {
-      return next(new ErrorHandler("Image not found", 404));
+    const imageBatch: IImageBatch | null = await ImageBatch.findById(batchId);
+    if (!imageBatch) {
+      return next(new ErrorHandler("Image batch not found", 404));
     }
 
-    res.status(200).json(updatedImage);
+    const image = imageBatch.images.find((img) => img._id?.equals(imageId));
+    if (!image) {
+      return next(new ErrorHandler("Image not found in this batch", 404));
+    }
+
+    image.title = updatedData.title || image.title;
+    image.url = updatedData.url || image.url;
+
+    await imageBatch.save();
+
+    res.status(200).json(image);
   } catch (error: unknown) {
     if (isError(error)) {
       next(new ErrorHandler(error.message || "Image edit failed", 500));
@@ -63,18 +77,28 @@ export const editImage = async (
   }
 };
 
-export const deleteImage = async (
+export const deleteImageInBatch = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { batchId, imageId } = req.params;
 
-    const deletedImage = await Image.findByIdAndDelete(id);
-    if (!deletedImage) {
+    const imageBatch: IImageBatch | null = await ImageBatch.findById(batchId);
+    if (!imageBatch) {
+      return next(new ErrorHandler("Image batch not found", 404));
+    }
+
+    const imageIndex = imageBatch.images.findIndex((img) =>
+      img._id?.equals(imageId)
+    );
+    if (imageIndex === -1) {
       return next(new ErrorHandler("Image not found", 404));
     }
+
+    imageBatch.images.splice(imageIndex, 1);
+    await imageBatch.save();
 
     res.status(200).json({ message: "Image deleted" });
   } catch (error: unknown) {
@@ -92,22 +116,34 @@ export const rearrangeImages = async (
   next: NextFunction
 ) => {
   try {
-    const { user, order } = req.body;
+    const { batchId } = req.params;
+    const { order } = req.body;
 
     if (!order || !Array.isArray(order)) {
       return next(new ErrorHandler("Invalid order array", 400));
     }
 
-    for (const image of order) {
-      await Image.findByIdAndUpdate(image.id, { order: image.order });
+    const imageBatch: IImageBatch | null = await ImageBatch.findById(batchId);
+    if (!imageBatch) {
+      return next(new ErrorHandler("Image batch not found", 404));
     }
+
+    for (const reorderedImage of order) {
+      const image = imageBatch.images.find((img) =>
+        img._id?.equals(reorderedImage.imageId)
+      );
+      if (!image) {
+        return next(new ErrorHandler("Image not found for rearrangement", 404));
+      }
+      image.order = reorderedImage.order;
+    }
+
+    await imageBatch.save();
 
     res.status(200).json({ message: "Images rearranged" });
   } catch (error: unknown) {
     if (isError(error)) {
-      next(
-        new ErrorHandler(error.message || "Image rearrangement failed", 500)
-      );
+      next(new ErrorHandler(error.message || "Image rearrangement failed", 500));
     } else {
       next(new ErrorHandler("Image rearrangement failed", 500));
     }

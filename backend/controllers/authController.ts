@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken";
 import ErrorHandler from "../utils/errorHandler";
 import User, { IUser } from "../models/User";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
+console.log("env secret : ",process.env.JWT_SECRET);
+
+const JWT_SECRET = process.env.JWT_SECRET||"s";
 
 const isError = (error: unknown): error is Error => {
   return (error as Error).message !== undefined;
@@ -41,9 +43,8 @@ export const register = async (
     const user: IUser = new User({ email, phone, password: hashedPassword });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
 
-    res.status(201).json({ success: true, token });
+    res.status(201).json({ success: true });
   } catch (error: unknown) {
     if (isError(error)) {
       next(new ErrorHandler(error.message || "Registration failed", 500));
@@ -71,7 +72,7 @@ export const login = async (
       return next(new ErrorHandler("Invalid email or password", 401));
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.status(200).json({ success: true, token });
   } catch (error: unknown) {

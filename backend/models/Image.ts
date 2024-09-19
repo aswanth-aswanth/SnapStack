@@ -1,34 +1,43 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IImage extends Document {
+export interface IImageDetails {
+  _id?: mongoose.Types.ObjectId;
   title: string;
   url: string;
-  userId: mongoose.Types.ObjectId;
   order: number;
 }
 
-const imageSchema = new mongoose.Schema<IImage>(
+export interface IImageBatch extends Document {
+  userId: mongoose.Types.ObjectId;
+  images: IImageDetails[];
+}
+
+const imageDetailsSchema = new Schema<IImageDetails>({
+  title: {
+    type: String,
+    required: true,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  order: {
+    type: Number,
+    required: true,
+  },
+});
+
+const imageBatchSchema = new Schema<IImageBatch>(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    order: {
-      type: Number,
-      default: 0,
-    },
+    images: [imageDetailsSchema],
   },
   { timestamps: true }
 );
 
-const Image = mongoose.model<IImage>("Image", imageSchema);
-export default Image;
+const ImageBatch = mongoose.model<IImageBatch>("ImageBatch", imageBatchSchema);
+export default ImageBatch;

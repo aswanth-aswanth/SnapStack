@@ -1,15 +1,7 @@
 import { body } from "express-validator";
 
 export const imageUploadValidation = [
-  body("images").isArray().withMessage("Images must be an array"),
-  body("images.*.title")
-    .not()
-    .isEmpty()
-    .withMessage("Each image must have a title"),
-  body("images.*.url")
-    .not()
-    .isEmpty()
-    .withMessage("Each image must have a URL"),
+  body("titles").isArray().withMessage("Titles must be an array"),
 ];
 
 export const imageEditValidation = [

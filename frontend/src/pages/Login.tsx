@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../api/apiClient";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password); // Trigger login
+      const response = await apiClient.post("/api/auth/login", {
+        email,
+        password,
+      });
+      const { token } = response.data;
+      localStorage.setItem("authToken", token);
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
     }
@@ -28,6 +33,7 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             className="w-full mb-4 p-2 border rounded"
+            required
           />
           <input
             type="password"
@@ -35,6 +41,7 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             className="w-full mb-4 p-2 border rounded"
+            required
           />
           <button
             type="submit"

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import ImageGallery from "./ImageGallery";
 import { FiPlus } from "react-icons/fi";
+import apiClient from "../../api/apiClient";
 
 function Parent() {
   const [images, setImages] = useState<any[]>([]);
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
 
   console.log("images state : ", images);
 
@@ -17,6 +19,7 @@ function Parent() {
         file: URL.createObjectURL(file),
         title: `Image ${images.length + index + 1}`,
         order: images.length + index,
+        rawFile: file,
       }));
       setImages((prevImages) => [...prevImages, ...uploadedImages]);
     }
@@ -56,8 +59,38 @@ function Parent() {
     setImages(reorderedImages);
   };
 
+  const handleSubmitImages = async () => {
+    if (images.some((img) => img.title.trim() === "")) {
+      alert("Please ensure all images have titles before uploading.");
+      return;
+    }
+  
+    const formData = new FormData();
+    images.forEach((image) => {
+      formData.append("images", image.rawFile);
+      formData.append("titles", image.title); 
+    });
+  
+    try {
+      setLoading(true);
+      const response = await apiClient.post("/api/images/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      alert(response.data.message);
+      setImages([]);
+    } catch (error) {
+      console.error("Image upload failed", error);
+      alert("Failed to upload images. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   return (
-    <div className=" bg-gray-100 py-10">
+    <div className="bg-gray-100 py-10">
       <div className="flex justify-center mb-10">
         <label className="cursor-pointer flex items-center">
           <FiPlus className="text-4xl text-blue-500" />
@@ -79,6 +112,20 @@ function Parent() {
         onEditImage={handleEditImage}
         onDeleteImage={handleDeleteImage}
       />
+
+      {images.length > 0 && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleSubmitImages}
+            className={`bg-blue-500 text-white px-6 py-2 rounded ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Uploading..." : "Upload Images"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

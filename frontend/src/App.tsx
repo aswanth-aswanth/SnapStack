@@ -4,9 +4,9 @@ import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
-import ResetPassword from "./components/auth/ResetPassword";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import { AuthProvider } from "./context/AuthContext";
 import NotFoundPage from "./pages/NotFoundPage";
 

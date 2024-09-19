@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { register } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../api/apiClient";
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await register(email, phone, password);
+      await apiClient.post("/api/auth/register", { email, phone, password });
       navigate("/login");
     } catch (error) {
       console.error("Registration failed", error);
@@ -29,6 +29,7 @@ const RegisterPage: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             className="w-full mb-4 p-2 border rounded"
+            required
           />
           <input
             type="tel"
@@ -36,6 +37,7 @@ const RegisterPage: React.FC = () => {
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone Number"
             className="w-full mb-4 p-2 border rounded"
+            required
           />
           <input
             type="password"
@@ -43,6 +45,7 @@ const RegisterPage: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             className="w-full mb-4 p-2 border rounded"
+            required
           />
           <button
             type="submit"
