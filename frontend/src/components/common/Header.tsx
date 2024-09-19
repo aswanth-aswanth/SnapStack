@@ -21,7 +21,7 @@ const Header: React.FC = () => {
           <li>
             <Link
               to="/"
-              className="flex items-center space-x-2 hover:text-gray-300 transition duration-300"
+              className="flex items-center space-x-2 text-gray-200 hover:text-gray-300 transition duration-300"
             >
               <FaHome size={20} />
               <span>Home</span>
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
+                  className="text-gray-200 hover:text-gray-300 transition duration-300 flex items-center space-x-2 border border-transparent hover:border-gray-300 px-4 py-2 rounded-md"
                 >
                   <FaChartLine size={18} />
                   <span>Dashboard</span>
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
+                  className="text-gray-200 hover:text-gray-300 transition duration-300 flex items-center space-x-2 border border-transparent hover:border-gray-300 px-4 py-2 rounded-md"
                 >
                   <FaSignOutAlt size={18} />
                   <span>Logout</span>
@@ -52,7 +52,7 @@ const Header: React.FC = () => {
             <li>
               <button
                 onClick={() => navigate("/login")}
-                className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
+                className="text-gray-200 hover:text-gray-300 transition duration-300 flex items-center space-x-2 border border-transparent hover:border-gray-300 px-4 py-2 rounded-md"
               >
                 <FaSignInAlt size={18} />
                 <span>Login</span>
