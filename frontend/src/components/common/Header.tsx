@@ -13,7 +13,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-gray-800 text-white p-4 flex justify-between items-center fixed left-0 right-0 z-50 shadow-md">
-      <Link to="/" className="hover:text-blue-400 transition duration-300">
+      <Link to="/" className="hover:text-gray-300 transition duration-300">
         <h1 className="text-2xl font-bold">SnapStack</h1>
       </Link>
       <nav>
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
           <li>
             <Link
               to="/"
-              className="flex items-center space-x-2 hover:text-blue-400 transition duration-300"
+              className="flex items-center space-x-2 hover:text-gray-300 transition duration-300"
             >
               <FaHome size={20} />
               <span>Home</span>
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
                 >
                   <FaChartLine size={18} />
                   <span>Dashboard</span>
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
                 >
                   <FaSignOutAlt size={18} />
                   <span>Logout</span>
@@ -52,7 +52,7 @@ const Header: React.FC = () => {
             <li>
               <button
                 onClick={() => navigate("/login")}
-                className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                className="bg-gray-600 px-4 py-2 rounded-md hover:bg-gray-500 transition duration-300 flex items-center space-x-2 shadow-md"
               >
                 <FaSignInAlt size={18} />
                 <span>Login</span>
