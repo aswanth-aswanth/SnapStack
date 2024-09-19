@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
+import { useAuth } from "../hooks/useAuth";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -16,6 +18,7 @@ const Login: React.FC = () => {
       });
       const { token } = response.data;
       localStorage.setItem("authToken", token);
+      login();
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
@@ -23,7 +26,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-[70vh] flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h1 className="text-2xl font-bold mb-4">Login</h1>
         <form onSubmit={handleLogin}>

@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import ErrorHandler from "../utils/errorHandler";
 import User, { IUser } from "../models/User";
 
-console.log("env secret : ",process.env.JWT_SECRET);
+const JWT_SECRET = process.env.JWT_SECRET;
 
-const JWT_SECRET = process.env.JWT_SECRET||"s";
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined");
+}
 
 const isError = (error: unknown): error is Error => {
   return (error as Error).message !== undefined;
@@ -43,7 +44,6 @@ export const register = async (
     const user: IUser = new User({ email, phone, password: hashedPassword });
     await user.save();
 
-
     res.status(201).json({ success: true });
   } catch (error: unknown) {
     if (isError(error)) {
@@ -72,7 +72,9 @@ export const login = async (
       return next(new ErrorHandler("Invalid email or password", 401));
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({ success: true, token });
   } catch (error: unknown) {

@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { FaHome, FaSignOutAlt, FaSignInAlt, FaChartLine } from "react-icons/fa";
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -11,31 +12,39 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-      <h1 className="text-2xl">SnapStack</h1>
+    <header className="bg-gray-800 text-white p-4 flex justify-between items-center fixed left-0 right-0 z-50 shadow-md">
+      <Link to="/" className="hover:text-blue-400 transition duration-300">
+        <h1 className="text-2xl font-bold">SnapStack</h1>
+      </Link>
       <nav>
         <ul className="flex items-center space-x-4">
           <li>
-            <Link to="/" className="hover:text-gray-400">
-              Home
+            <Link
+              to="/"
+              className="flex items-center space-x-2 hover:text-blue-400 transition duration-300"
+            >
+              <FaHome size={20} />
+              <span>Home</span>
             </Link>
           </li>
-          {user ? (
+          {isAuthenticated ? (
             <>
               <li>
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
-                  Dashboard
+                  <FaChartLine size={18} />
+                  <span>Dashboard</span>
                 </button>
               </li>
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
+                  className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
-                  Logout
+                  <FaSignOutAlt size={18} />
+                  <span>Logout</span>
                 </button>
               </li>
             </>
@@ -43,9 +52,10 @@ const Header: React.FC = () => {
             <li>
               <button
                 onClick={() => navigate("/login")}
-                className="bg-green-500 px-4 py-2 rounded hover:bg-green-700"
+                className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
               >
-                Login
+                <FaSignInAlt size={18} />
+                <span>Login</span>
               </button>
             </li>
           )}

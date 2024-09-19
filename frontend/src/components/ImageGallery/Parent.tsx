@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ImageGallery from "./ImageGallery";
 import { FiPlus } from "react-icons/fi";
 import apiClient from "../../api/apiClient";
+import { useAuth } from "../../hooks/useAuth";
 
 function Parent() {
   const [images, setImages] = useState<any[]>([]);
@@ -9,6 +11,9 @@ function Parent() {
     null
   );
   const [loading, setLoading] = useState(false);
+
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   console.log("images state : ", images);
 
@@ -60,17 +65,22 @@ function Parent() {
   };
 
   const handleSubmitImages = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
     if (images.some((img) => img.title.trim() === "")) {
       alert("Please ensure all images have titles before uploading.");
       return;
     }
-  
+
     const formData = new FormData();
     images.forEach((image) => {
       formData.append("images", image.rawFile);
-      formData.append("titles", image.title); 
+      formData.append("titles", image.title);
     });
-  
+
     try {
       setLoading(true);
       const response = await apiClient.post("/api/images/upload", formData, {
@@ -87,7 +97,6 @@ function Parent() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="bg-gray-100 py-10">
