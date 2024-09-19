@@ -15,7 +15,7 @@ const App: React.FC = () => {
     <AuthProvider>
       <div className="flex flex-col ">
         <Header />
-        <main className="flex-grow p-4 pb-12">
+        <main className="flex-grow p-4 pb-20 mt-[100px]">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />

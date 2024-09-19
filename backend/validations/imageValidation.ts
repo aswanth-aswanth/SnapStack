@@ -16,3 +16,11 @@ export const imageRearrangeValidation = [
     .isNumeric()
     .withMessage("Each item must have a numeric order"),
 ];
+
+export const updateImageBatchValidation = [
+  body('images').isArray().withMessage('Images must be an array'),
+  body('images.*.title').isString().notEmpty().withMessage('Image title is required'),
+  body('images.*.order').isInt({ min: 0 }).withMessage('Image order must be a non-negative integer'),
+  body('images.*._id').optional().isMongoId().withMessage('Invalid image ID'),
+  body('images.*.file').optional().isString().withMessage('File name must be a string')
+];
