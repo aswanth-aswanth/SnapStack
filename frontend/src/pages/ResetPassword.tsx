@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { resetPassword } from "../api/auth";
 
 const ResetPasswordPage: React.FC = () => {
   const [email, setEmail] = useState("");
-  const { resetPassword } = useAuth();
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await resetPassword(email);
-      alert("Password reset email sent.");
+      setMessage("Password reset email sent. Please check your inbox.");
     } catch (error) {
-      console.error("Failed to reset password:", error);
+      setMessage("Failed to send password reset email.");
+      console.log("error : ", error);
     }
   };
 
@@ -30,9 +31,10 @@ const ResetPasswordPage: React.FC = () => {
           type="submit"
           className="w-full py-2 text-white bg-red-500 rounded-md"
         >
-          Reset Password
+          Send Reset Email
         </button>
       </form>
+      {message && <p className="text-center mt-4">{message}</p>}
     </div>
   );
 };

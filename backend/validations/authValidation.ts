@@ -16,7 +16,6 @@ export const loginValidation = [
 ];
 
 export const resetPasswordValidation = [
-  body("email").isEmail().withMessage("Please enter a valid email"),
   body("newPassword")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),

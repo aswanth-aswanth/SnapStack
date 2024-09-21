@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
+import NewPassword from "./pages/NewPassword";
 import { AuthProvider } from "./context/AuthContext";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -22,6 +23,7 @@ const App: React.FC = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/reset-password/:token" element={<NewPassword />} />
             <Route path="/*" element={<NotFoundPage />} />
           </Routes>
         </main>
