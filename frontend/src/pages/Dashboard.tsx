@@ -180,7 +180,7 @@ const Dashboard: React.FC = () => {
                 }
               >
                 <img
-                  src={`http://localhost:5000/uploads/${image.url}`}
+                  src={`https://snapstack.onrender.com/uploads/${image.url}`}
                   alt={image.title}
                   className="w-full h-48 object-cover rounded-md mb-2"
                 />
