@@ -85,7 +85,7 @@ export const updateImageBatch = async (
     if (!imageBatch) {
       return next(new ErrorHandler("Image batch not found", 404));
     }
-    const uploadDir = path.join(__dirname, "..", "uploads");
+    const uploadDir = path.join(__dirname, "..","..", "uploads");
 
     const imagesToKeep = new Set(updatedImages.map((img: any) => img._id));
     for (const oldImage of imageBatch.images) {
