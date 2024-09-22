@@ -85,12 +85,12 @@ export const updateImageBatch = async (
     if (!imageBatch) {
       return next(new ErrorHandler("Image batch not found", 404));
     }
-    const uploadDir = path.join(__dirname, "..","..", "uploads");
+    const uploadDir = path.join(__dirname, "..", "..", "uploads");
 
     const imagesToKeep = new Set(updatedImages.map((img: any) => img._id));
     for (const oldImage of imageBatch.images) {
       if (oldImage._id && !imagesToKeep.has(oldImage._id.toString())) {
-        await fs.unlink(path.join(uploadDir, oldImage.url));
+        await fs.unlink(path.join(uploadDir, oldImage.url)); // Remove the image file
       }
     }
 
@@ -122,14 +122,17 @@ export const updateImageBatch = async (
     );
 
     imageBatch.images = updatedImageDetails;
-    await imageBatch.save();
 
+    if (imageBatch.images.length === 0) {
+      await ImageBatch.deleteOne({ _id: batchId });
+      return res.status(200).json({ message: "Image batch deleted successfully" });
+    }
+
+    await imageBatch.save();
     res.status(200).json(imageBatch);
   } catch (error: unknown) {
     if (isError(error)) {
-      next(
-        new ErrorHandler(error.message || "Failed to update image batch", 500)
-      );
+      next(new ErrorHandler(error.message || "Failed to update image batch", 500));
     } else {
       next(new ErrorHandler("Failed to update image batch", 500));
     }
