@@ -14,6 +14,11 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+setInterval(
+  () => console.log("uploads path join ", path.join(__dirname, "uploads")),
+  5000
+);
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
