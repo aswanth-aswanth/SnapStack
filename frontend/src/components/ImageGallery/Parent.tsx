@@ -83,12 +83,12 @@ function Parent() {
 
     try {
       setLoading(true);
-      const response = await apiClient.post("/api/images/upload", formData, {
+      await apiClient.post("/api/images/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert(response.data.message);
+      alert("Uploaded successfully");
       setImages([]);
     } catch (error) {
       console.error("Image upload failed", error);
